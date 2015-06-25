@@ -1,4 +1,4 @@
-Confounding in Survey Experiments: Democratic Peace Survey R Code 
+Confounding in Survey Experiments: Democratic Peace Survey Data & Code
 ===================
 
 This GitHub repo contains data and code for the democratic peace survey in "Confounding in Survey Experiments." All the R code is in the `R` folder and all the data are in the `data` folder. Images generated as part of the analysis will be saved to the `images` folder. 
