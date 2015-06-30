@@ -1,0 +1,11 @@
+language: r
+sudo: required
+
+r_packages:
+	- ggplot2
+	- foreign
+	- xtable
+	- reshape
+	- haven
+	- systemfit
+	- lfe 

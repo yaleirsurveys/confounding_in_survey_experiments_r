@@ -4,18 +4,14 @@ library(pwr)
 library(dplyr)
 library(reshape2)
 library(ggplot2)
+library(magrittr)
 
 # Calculations
 n_size <- seq(from=800, to=1200, by=20)
 p_0.2 <- ((n_size/2) %>% pwr.t.test(d=0.2, sig.level=.05, type="two.sample"))$power
-p_0.25 <- ((n_size/2) %>% pwr.t.test(d=0.25, sig.level=.05, type="two.sample"))$power
 p_0.3 <- ((n_size/2) %>% pwr.t.test(d=0.3, sig.level=.05, type="two.sample"))$power
-power_calculator <- function(mu_t, mu_c, sigma, alpha=0.05, N){
-  lowertail <- (abs(mu_t - mu_c)*sqrt(N))/(2*sigma)
-  uppertail <- -1*lowertail
-  beta <- pnorm(lowertail- qnorm(1-alpha/2), lower.tail=TRUE) + 1-  pnorm(uppertail- qnorm(1-alpha/2), lower.tail=FALSE)
-  return(beta)
-}
+p_0.4 <- ((n_size/2) %>% pwr.t.test(d=0.4, sig.level=.05, type="two.sample"))$power
+
 
 # Simulations
 power_sim <- function(possible.ns, alpha, sims, tau){
@@ -44,27 +40,23 @@ power_sim <- function(possible.ns, alpha, sims, tau){
 possible.ns <- seq(from=800, to=1200, by=20)     # The sample sizes we'll be considering
 alpha <- 0.05                                    # Standard significance level
 sims <- 1000                                 # Number of simulations to conduct for each N
-set.seed(20349)
 sim_0.2 <- power_sim(possible.ns = possible.ns, alpha = alpha, sims = 1000, tau = 0.2)
-set.seed(50303)
-sim_0.25 <- power_sim(possible.ns = possible.ns, alpha = alpha, sims = 1000, tau = 0.25)
-set.seed(99202)
 sim_0.3 <- power_sim(possible.ns = possible.ns, alpha = alpha, sims = 1000, tau = 0.3)
+sim_0.4 <- power_sim(possible.ns = possible.ns, alpha = alpha, sims = 1000, tau = 0.4)
 
 # plot a graph
-pp_1 <- data.frame(n_size, es_0.2 = p_0.2, es_0.25 = p_0.25, 
-                   es_0.3 = p_0.3, type = "Calculated")
-pp_2 <- data.frame(n_size, es_0.2 = sim_0.2, es_0.25 = sim_0.25, 
-                   es_0.3 = sim_0.3, type = "Simulated")
+pp_1 <- data.frame(n_size, es_0.2 = p_0.2, es_0.3 = p_0.3, 
+                   es_0.4 = p_0.4, type = "Calculated")
+pp_2 <- data.frame(n_size, es_0.2 = sim_0.2, es_0.3 = sim_0.3, 
+                   es_0.4 = sim_0.4, type = "Simulated")
 pp <- melt(data = rbind(pp_1, pp_2), id = c("n_size", "type"))
-levels(pp$variable) <- c("0.2", "0.25", "0.3")
+levels(pp$variable) <- c("0.2", "0.3", "0.4")
 ggplot(data = pp, mapping = aes(x = n_size, y = value,
                                 color = variable,
                                 shape = variable)) + 
-  geom_point() + xlab("N") + ylab("Power: Significance Level = 0.05") + 
-  theme_bw() + 
+  geom_point() + xlab("N") + ylab("Power: Significance Level = 0.05") +  
   scale_shape_discrete(name=expression(tau)) + 
-  scale_color_discrete(name=expression(tau)) + facet_grid(. ~ type)
+  scale_color_discrete(name=expression(tau)) + facet_grid(. ~ type) + theme_linedraw()
 ggsave("~/Dropbox/confounding/preanalysis/images/power_graph.pdf", 
        width = 8, height = 3.5)
 
