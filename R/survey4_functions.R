@@ -3,15 +3,8 @@
 ########################################
 
 # packages
-library(ggplot2)
-library(foreign)
-library(xtable)
-library(reshape)
-library(haven)
-library(plyr)
-library(foreign)
-library(systemfit)
-library(lfe)
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(ggplot2, foreign, xtable, reshape, haven, systemfit, lfe)
 
 ########################################
 # Data Processing Functions

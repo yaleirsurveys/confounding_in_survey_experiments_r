@@ -4,7 +4,6 @@
 rm(list = ls())
 
 # Load the function
-setwd("~/Dropbox/confounding/data_code/survey4")
 source("R/survey4_functions.R")
 
 # Load in survey data
@@ -465,12 +464,13 @@ myreg.iv(Y = d$support2[!is.na(d$support2)],
 ############################################
 # Balance Tests
 
+# clean up
 d$college <- ifelse(d$educ > 3, 1, 0)
 d$democrat <- ifelse(d$partyid < 3, 1, 0)
 d$age_num <- ifelse(d$age=="older than 100", 101, d$age+18)
 d$male <- ifelse(d$sex == 1, 1, 0)
-d$poliid_1
 
+# balance tests
 for (i in 1:3){
   robustse(lm(as.numeric(Z)-1 ~ college, data = d[d$V==levels(d$V)[i],]))
   robustse(lm(as.numeric(Z)-1 ~ democrat, data = d[d$V==levels(d$V)[i],]))
